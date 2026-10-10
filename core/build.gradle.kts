@@ -6,11 +6,26 @@ plugins {
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.androidLint)
     alias(libs.plugins.kmpNativeCoroutines)
+    alias(libs.plugins.wire)
+    alias(libs.plugins.sqldelight)
 }
 
 compose.resources {
     publicResClass = true
     generateResClass = auto
+}
+
+wire {
+    kotlin {}
+}
+
+sqldelight {
+    databases {
+        create("GtfsDatabase") {
+            packageName.set("com.jsontextfield.dtc.core.db")
+            verifyMigrations.set(false)
+        }
+    }
 }
 
 kotlin {
@@ -19,7 +34,7 @@ kotlin {
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     android {
-        namespace = "com.jsontextfield.departurescreen.core"
+        namespace = "com.jsontextfield.dtc.core"
         compileSdk = libs.versions.compileSdk.get().toInt()
         minSdk = libs.versions.minSdk.get().toInt()
 
@@ -63,9 +78,11 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.sqldelight.android.driver)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.sqldelight.native.driver)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -92,6 +109,9 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
 
             implementation(libs.touchlab.kermit)
+            implementation(libs.wire.runtime)
+            implementation(libs.sqldelight.runtime)
+            implementation(libs.sqldelight.coroutines.extensions)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

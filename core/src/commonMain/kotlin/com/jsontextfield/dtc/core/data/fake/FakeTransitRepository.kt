@@ -1,0 +1,99 @@
+@file:OptIn(ExperimentalUuidApi::class, ExperimentalTime::class)
+
+package com.jsontextfield.dtc.core.data.fake
+
+import com.jsontextfield.dtc.core.data.ITransitRepository
+import com.jsontextfield.dtc.core.entities.Alert
+import com.jsontextfield.dtc.core.entities.Schedule
+import com.jsontextfield.dtc.core.entities.Stop
+import com.jsontextfield.dtc.core.entities.Trip
+import com.jsontextfield.dtc.core.entities.TripDetails
+import com.jsontextfield.dtc.core.ui.StopType
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlin.time.ExperimentalTime
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
+
+class FakeTransitRepository : ITransitRepository {
+
+    var shouldThrowError = false
+
+    var stops: List<Stop> = listOf(
+        Stop(
+            code = "UN",
+            name = "Union Station",
+            types = setOf(StopType.TRAIN),
+        )
+    )
+    var trips: List<Trip> = listOf(
+        Trip(
+            id = Uuid.random().toString(),
+            code = "BR",
+            destination = "Allandale Waterfront GO",
+            platform = "3",
+        ),
+        Trip(
+            id = Uuid.random().toString(),
+            code = "LW",
+            destination = "Niagara Falls Go (Via Rail Station)",
+            info = "Wait / Attendez",
+            platform = "-",
+        ),
+        Trip(
+            id = Uuid.random().toString(),
+            code = "ST",
+            destination = "Mount Joy GO",
+            info = "Proceed / Attendez",
+            platform = "7 & 8",
+        ),
+        Trip(
+            id = Uuid.random().toString(),
+            code = "RH",
+            destination = "Bloomington GO",
+            info = "Proceed / Attendez",
+            platform = "11 & 12",
+        ),
+        Trip(
+            id = Uuid.random().toString(),
+            code = "MI",
+            destination = "Milton GO",
+            platform = "9",
+        ),
+    )
+
+    var serviceAlerts: List<Alert> = emptyList()
+
+    var informationAlerts: List<Alert> = emptyList()
+
+
+    override suspend fun getTrips(stopCode: String): List<Trip> {
+        if (shouldThrowError) throw Exception("Test Error")
+        return trips
+    }
+
+    override suspend fun getTripDetails(tripId: String, stopCode: String): TripDetails? {
+        if (shouldThrowError) throw Exception("Test Error")
+        return null
+    }
+
+    override suspend fun getMoreTrips(
+        tripId: String,
+        stopCode: String
+    ): Set<String> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAllAlerts(language: String): Flow<List<Alert>> {
+        return flowOf(emptyList())
+    }
+
+    override suspend fun getAllStops(): List<Stop> {
+        return stops
+    }
+
+    override suspend fun getUPExpressTripSchedule(id: String): List<Schedule> {
+        if (shouldThrowError) throw Exception("Test Error")
+        return emptyList()
+    }
+}

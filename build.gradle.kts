@@ -9,4 +9,6 @@ plugins {
     alias(libs.plugins.androidLint) apply false
     alias(libs.plugins.kotlinAndroid) apply false
     alias(libs.plugins.kmpNativeCoroutines) apply false
+    alias(libs.plugins.wire) apply false
+    alias(libs.plugins.sqldelight) apply false
 }

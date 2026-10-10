@@ -1,1 +1,3 @@
 /build
+/src/commonMain/kotlin/com/jsontextfield/dtc/core/network/SupabaseApiKey.kt
+/src/commonMain/composeResources/files/gtfs.db

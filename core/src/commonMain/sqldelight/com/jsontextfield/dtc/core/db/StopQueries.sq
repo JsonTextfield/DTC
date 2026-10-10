@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS stops (
+   stop_id             TEXT PRIMARY KEY,
+   stop_code           TEXT,
+   stop_name           TEXT,
+   stop_lat            REAL,
+   stop_lon            REAL,
+   location_type       INTEGER,
+   parent_station      TEXT,
+   wheelchair_boarding INTEGER
+);
+
+
+selectAllStops:
+SELECT * FROM stops WHERE parent_station IS NULL;

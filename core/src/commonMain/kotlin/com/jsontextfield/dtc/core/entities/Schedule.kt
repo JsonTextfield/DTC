@@ -1,0 +1,40 @@
+@file:OptIn(ExperimentalTime::class)
+
+package com.jsontextfield.dtc.core.entities
+
+import androidx.compose.runtime.Immutable
+import androidx.compose.ui.text.intl.Locale
+import kotlinx.datetime.format
+import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.format.Padding
+import kotlinx.datetime.format.char
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+
+@Immutable
+data class Schedule(
+    val name: String,
+    val code: String,
+    val time: Instant? = null,
+    private val lastUpdated: Instant = Instant.fromEpochMilliseconds(0),
+) {
+    val relativeDepartureTime: Int? = time?.let { (time - lastUpdated).toInt(DurationUnit.MINUTES) }
+
+    val twelveHourDepartureTime: String = time?.format(DateTimeComponents.Format {
+        amPmHour(Padding.NONE)
+        char(':')
+        minute()
+        char(' ')
+        if (Locale.current.language == "fr") {
+            amPmMarker("a.m.", "p.m.")
+        } else {
+            amPmMarker("AM", "PM")
+        }
+    }) ?: "-"
+    val twentyFourHourDepartureTime: String = time?.format(DateTimeComponents.Format {
+        hour()
+        char(':')
+        minute()
+    }) ?: "-"
+}

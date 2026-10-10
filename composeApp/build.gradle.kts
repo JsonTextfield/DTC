@@ -92,11 +92,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.jsontextfield.departurescreen"
+    namespace = "com.jsontextfield.dtc"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.jsontextfield.departurescreen.android"
+        applicationId = "com.jsontextfield.dtc"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = libs.versions.versionCode.get().toInt()
@@ -130,16 +130,4 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.ui.tooling)
-}
-
-compose.desktop {
-    application {
-        mainClass = "com.jsontextfield.departurescreen.MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.jsontextfield.departurescreen"
-            packageVersion = "1.0.0"
-        }
-    }
 }

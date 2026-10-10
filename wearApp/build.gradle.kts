@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.jsontextfield.departurescreen.wearapp"
+    namespace = "com.jsontextfield.dtc.wearapp"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

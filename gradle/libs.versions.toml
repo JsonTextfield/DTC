@@ -25,6 +25,8 @@ composeMaterial = "1.6.2"
 composeFoundation = "1.6.2"
 composeMaterial3 = "1.6.2"
 kermit = "2.1.0"
+wire = "7.1.0"
+sqldelight = "2.0.2"
 # Wear
 wearToolingPreview = "1.0.0"
 coreSplashscreen = "1.0.1"
@@ -94,6 +96,12 @@ runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jet
 touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "jetbrains" }
 ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "jetbrains" }
+wire-runtime = { module = "com.squareup.wire:wire-runtime", version.ref = "wire" }
+sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqldelight" }
+sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
+sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
+sqldelight-sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -105,3 +113,5 @@ androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.lib
 androidLint = { id = "com.android.lint", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kmpNativeCoroutines = { id = "com.rickclephas.kmp.nativecoroutines", version.ref = "kmpNativeCoroutines" }
+wire = { id = "com.squareup.wire", version.ref = "wire" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
