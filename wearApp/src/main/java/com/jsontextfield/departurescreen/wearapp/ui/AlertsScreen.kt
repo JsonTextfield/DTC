@@ -1,0 +1,114 @@
+package com.jsontextfield.departurescreen.wearapp.ui
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.semantics.CollectionInfo
+import androidx.compose.ui.semantics.CollectionItemInfo
+import androidx.compose.ui.semantics.collectionInfo
+import androidx.compose.ui.semantics.collectionItemInfo
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material.Scaffold
+import com.jsontextfield.departurescreen.core.entities.Alert
+import com.jsontextfield.departurescreen.core.ui.components.AlertItem
+import com.jsontextfield.departurescreen.core.ui.viewmodels.AlertsViewModel
+
+@Composable
+fun AlertsScreen(
+    alertsViewModel: AlertsViewModel,
+    onBackPressed: () -> Unit = {},
+) {
+    val language = Locale.current.language
+    LaunchedEffect(language) {
+        alertsViewModel.loadData(language)
+    }
+    val uiState by alertsViewModel.uiState.collectAsState()
+    AlertScreen(
+        isRefreshing = uiState.isRefreshing,
+        alerts = uiState.alerts,
+        onBackPressed = onBackPressed,
+        onRefresh = { alertsViewModel.refresh(language) },
+    )
+}
+
+@Composable
+fun AlertScreen(
+    alerts: List<Alert>,
+    onBackPressed: () -> Unit = {},
+    isRefreshing: Boolean = false,
+    onRefresh: () -> Unit = {},
+) {
+    val density = LocalDensity.current
+    val widthDp =
+        (LocalWindowInfo.current.containerSize.width / density.density - WindowInsets.safeDrawing.asPaddingValues()
+            .calculateLeftPadding(
+                LayoutDirection.Ltr
+            ).value - WindowInsets.safeDrawing.asPaddingValues()
+            .calculateRightPadding(LayoutDirection.Ltr).value).toInt()
+    val columns = (widthDp / 600).coerceIn(1, 4)
+    Scaffold(
+    ) {
+        LazyVerticalGrid(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    start = WindowInsets.safeDrawing.asPaddingValues().calculateLeftPadding(LayoutDirection.Ltr),
+                    end = WindowInsets.safeDrawing.asPaddingValues().calculateRightPadding(LayoutDirection.Ltr),
+                )
+                .semantics {
+                    collectionInfo = CollectionInfo(
+                        rowCount = alerts.size,
+                        columnCount = columns,
+                    )
+                },
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(16.dp) + PaddingValues(bottom = 100.dp),
+            columns = GridCells.Adaptive(240.dp),
+        ) {
+            itemsIndexed(alerts, key = { _, item -> item.id }) { index, alert ->
+                AlertItem(
+                    alert,
+                    modifier = Modifier
+                        .semantics {
+                            collectionItemInfo = CollectionItemInfo(
+                                rowIndex = index / columns,
+                                columnIndex = index % columns,
+                                rowSpan = 1,
+                                columnSpan = 1,
+                            )
+                        }
+                        .animateItem()
+                )
+            }
+        }
+    }
+}
+
+private operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
+    return PaddingValues(
+        start = this.calculateStartPadding(LayoutDirection.Ltr) + other.calculateStartPadding(LayoutDirection.Ltr),
+        top = this.calculateTopPadding() + other.calculateTopPadding(),
+        end = this.calculateEndPadding(LayoutDirection.Ltr) + other.calculateEndPadding(LayoutDirection.Ltr),
+        bottom = this.calculateBottomPadding() + other.calculateBottomPadding()
+    )
+}

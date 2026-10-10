@@ -1,0 +1,83 @@
+//
+//  GODeparturesEntryView.swift
+//  GODeparturesExtension
+//
+//  Created by Jason Bromfield on 2025-11-13.
+//  Copyright © 2025 orgName. All rights reserved.
+//
+
+import Algorithms
+import AppIntents
+import ComposeApp
+import SwiftUI
+import WidgetKit
+
+struct GODeparturesEntryView: View {
+    var entry: DeparturesEntry
+    @Environment(\.widgetFamily) var widgetFamily: WidgetFamily
+
+    init(entry: DeparturesEntry) {
+        self.entry = entry
+    }
+
+    var body: some View {
+        VStack {
+            Link(
+                destination: URL(
+                    string: "\(AppKt.BASE_URL)/?selectedStop=\(entry.stopName)",
+                )!
+            ) {
+                Text(entry.stopName)
+                    .lineLimit(1)
+                    .font(.footnote)
+                    .bold()
+                    .padding(.vertical, 4)
+                    .frame(minWidth: 0, maxWidth: .infinity)
+            }
+            if widgetFamily == .systemSmall {
+                SmallWidgetView(entry: entry)
+            } else {
+                let columnCount = widgetFamily == .systemExtraLarge ? 2 : 1
+                let rowCount =
+                    switch widgetFamily {
+                    case .systemMedium: 1
+                    case .systemLarge, .systemExtraLarge: 5
+                    case .systemExtraLargePortrait: 8
+                    default: 1
+                    }
+                Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                    GridRow {
+                        ForEach(
+                            0..<(min(columnCount, entry.trips.count)),
+                            id: \.self
+                        ) { _ in
+                            WidgetTripListHeaderRow()
+                        }
+                    }
+                    ForEach(
+                        entry.trips
+                            .chunks(ofCount: columnCount)
+                            .prefix(rowCount),
+                        id: \.self.first?.id,
+                    ) { trips in
+                        GridRow {
+                            ForEach(trips, id: \.self.id) { trip in
+                                Link(
+                                    destination: entry.getTripDestination(trip: trip)
+                                ) {
+                                    TripListItemView(
+                                        trip: trip,
+                                        timeFormat: entry.timeFormat,
+                                    )
+                                    .frame(minHeight: 48, maxHeight: 64, alignment: .center)
+                                }
+                            }
+                        }
+                    }
+                }
+                Spacer()
+                UpdateButton(title: "Last updated: \(entry.date, style: .time)")
+            }
+        }.frame(maxHeight: .infinity).padding(4)
+    }
+}

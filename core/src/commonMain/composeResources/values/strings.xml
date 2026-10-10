@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GO Departures</string>
+    <string name="express">Express</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="platform_number">Platform %1$s</string>
+    <string name="platform">Platform</string>
+    <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
+    <string name="cancel">Cancel</string>
+    <string name="reset">Reset</string>
+    <string name="close">Close</string>
+    <string name="about">About</string>
+    <string name="licences">Licences</string>
+    <string name="more">More</string>
+    <string name="sort_by_time">Sort by time</string>
+    <string name="sort_by_line">Sort by line</string>
+    <string name="stop">Stop</string>
+    <string name="time">Time</string>
+    <string name="line">Line</string>
+    <string name="route">Route</string>
+    <string name="scheduled">Scheduled</string>
+    <string name="departure">Departure</string>
+    <string name="destination">Destination</string>
+    <string name="minutes">%1$s min</string>
+    <string name="min">min</string>
+    <string name="all">All</string>
+    <string name="unread">Unread</string>
+    <string name="light_mode">Light</string>
+    <string name="dark_mode">Dark</string>
+    <string name="system_default">Default</string>
+    <string name="theme">Theme</string>
+    <string name="alerts">Alerts</string>
+    <string name="back">Back</string>
+    <string name="information_alerts">Information alerts</string>
+    <string name="service_alerts">Service alerts</string>
+    <string name="error">An error occurred</string>
+    <string name="retry">Retry</string>
+    <string name="favourite">Favourite</string>
+    <string name="clear">Clear</string>
+    <string name="search">Search</string>
+    <string name="scroll_to_top">Scroll to top</string>
+    <string name="bus">Bus</string>
+    <string name="train">Train</string>
+    <string name="park_and_ride">Park &amp; Ride</string>
+    <string name="day_difference">%1$sd</string>
+    <string name="hour_difference">%1$sh</string>
+    <string name="minute_difference">%1$sm</string>
+    <string name="twelve_hour">12-hour</string>
+    <string name="twenty_four_hour">24-hour</string>
+    <string name="relative">Relative</string>
+    <string name="normal">Normal</string>
+    <string name="medium">Medium</string>
+    <string name="high">High</string>
+    <string name="alert_details_title">Alert details</string>
+    <plurals name="day_difference_full">
+        <item quantity="one">%1$d day ago</item>
+        <item quantity="other">%1$d days ago</item>
+    </plurals>
+    <plurals name="hour_difference_full">
+        <item quantity="one">%1$d hour ago</item>
+        <item quantity="other">%1$d hours ago</item>
+    </plurals>
+    <plurals name="minute_difference_full">
+        <item quantity="one">%1$d minute ago</item>
+        <item quantity="other">%1$d minutes ago</item>
+    </plurals>
+    <plurals name="number_of_cars">
+        <item quantity="one">%1$s car</item>
+        <item quantity="other">%1$s cars</item>
+    </plurals>
+    <plurals name="minutes_content_description">
+        <item quantity="one">Departing in %1$s minute</item>
+        <item quantity="other">Departing in %1$s minutes</item>
+    </plurals>
+</resources>

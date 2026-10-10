@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Départs GO</string>
+    <string name="express">Express</string>
+    <string name="cancelled">Annulée</string>
+    <string name="platform_number">Quai %1$s</string>
+    <string name="platform">Quai</string>
+    <string name="filter">Filtrer</string>
+    <string name="sort">Trier</string>
+    <string name="cancel">Annuler</string>
+    <string name="reset">Réinitialiser</string>
+    <string name="close">Fermer</string>
+    <string name="about">À propos de</string>
+    <string name="licences">Licences</string>
+    <string name="more">Plus</string>
+    <string name="sort_by_time">Trier par l'heure</string>
+    <string name="sort_by_line">Trier par la ligne</string>
+    <string name="stop">Arrêt</string>
+    <string name="time">Heure</string>
+    <string name="line">Ligne</string>
+    <string name="route">Ligne</string>
+    <string name="scheduled">Programmé</string>
+    <string name="departure">Départ</string>
+    <string name="destination">Destination</string>
+    <string name="minutes">%1$s min</string>
+    <string name="min">min</string>
+    <string name="all">Tous</string>
+    <string name="unread">Non lu</string>
+    <string name="light_mode">Lumière</string>
+    <string name="dark_mode">Sombre</string>
+    <string name="system_default">Défaut</string>
+    <string name="theme">Thème</string>
+    <string name="alerts">Alertes</string>
+    <string name="back">Retourner</string>
+    <string name="information_alerts">Alertes d'information</string>
+    <string name="service_alerts">Alertes de service</string>
+    <string name="error">Une erreur s'est produite</string>
+    <string name="retry">Réessayer</string>
+    <string name="favourite">Préférée</string>
+    <string name="clear">Effacer</string>
+    <string name="search">Chercher</string>
+    <string name="scroll_to_top">Faire défiler vers le haut</string>
+    <string name="bus">Autobus</string>
+    <string name="train">Train</string>
+    <string name="park_and_ride">Stationnement-relais</string>
+    <string name="day_difference">%1$s j</string>
+    <string name="hour_difference">%1$s h</string>
+    <string name="minute_difference">%1$s m</string>
+    <string name="twelve_hour">12 h</string>
+    <string name="twenty_four_hour">24 h</string>
+    <string name="relative">Relative</string>
+    <string name="normal">Normal</string>
+    <string name="medium">Moyen</string>
+    <string name="high">Haut</string>
+    <string name="alert_details_title">Détails de l'alerte</string>
+    <plurals name="day_difference_full">
+        <item quantity="one">Il y a %1$d jour</item>
+        <item quantity="other">Il y a %1$d jours</item>
+    </plurals>
+    <plurals name="hour_difference_full">
+        <item quantity="one">Il y a %1$d heure</item>
+        <item quantity="other">Il y a %1$d heures</item>
+    </plurals>
+    <plurals name="minute_difference_full">
+        <item quantity="one">Il y a %1$d minute</item>
+        <item quantity="other">Il y a %1$d minutes</item>
+    </plurals>
+    <plurals name="number_of_cars">
+        <item quantity="one">%1$s voiture</item>
+        <item quantity="other">%1$s voitures</item>
+    </plurals>
+    <plurals name="minutes_content_description">
+        <item quantity="one">Partira dans %1$s minute</item>
+        <item quantity="other">Partira dans %1$s minutes</item>
+    </plurals>
+</resources>

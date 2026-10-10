@@ -1,0 +1,164 @@
+//
+//  GODepartures.swift
+//  GODepartures
+//
+//  Created by Jason Bromfield on 2025-10-13.
+//  Copyright © 2025 orgName. All rights reserved.
+//
+
+import AppIntents
+import ComposeApp
+import SwiftUI
+import WidgetKit
+import coreKit
+
+struct GODeparturesProvider: AppIntentTimelineProvider {
+    let widgetHelper = WidgetHelper()
+    let transitRepository: CoreITransitRepository
+    let departureScreenUseCase: CoreGetSelectedStopUseCase
+
+    init() {
+        transitRepository = widgetHelper.transitRepository
+        departureScreenUseCase = widgetHelper.getSelectedStopUseCase
+    }
+
+    func snapshot(
+        for configuration: ConfigurationIntent,
+        in context: Context,
+    ) async -> DeparturesEntry {
+        let userDefaults = UserDefaults(
+            suiteName: "group.com.jsontextfield.godepartures"
+        )
+
+        let timeFormat: TimeFormat = configuration.timeFormat
+        let sortMode: SortMode = configuration.sortMode
+
+        do {
+            let allStops = try await transitRepository.getAllStops()
+            if let stopName = configuration.selectedStop?.name
+                ?? allStops.first(where: { $0.code.contains("UN") })?.name
+            {
+                let visibleTrains: String =
+                    userDefaults?.object(forKey: "hiddenTrains") as? String
+                    ?? ""
+
+                // Parse comma-separated stop codes
+                let codes: [String] = (configuration.selectedStop?.id ?? "UN")
+                    .split(separator: ", ")
+                    .map {
+                        String($0)
+                    }
+
+                // Fetch trips per code (sequentially; safe for widgets)
+                var fetchedTrips: [CoreTrip] = []
+                for code in codes {
+                    let result = try await transitRepository.getTrips(
+                        stopCode: code
+                    )
+                    fetchedTrips.append(contentsOf: result)
+                }
+                // Sort according to mode
+                let trips = fetchedTrips.filter { trip in
+                    visibleTrains.isEmpty || visibleTrains.contains(trip.code)
+                }
+                .sorted(by: {
+                    switch sortMode {
+                    case .time:
+                        return $0.departureTime.toEpochMilliseconds()
+                            < $1.departureTime.toEpochMilliseconds()
+                    case .line:
+                        fallthrough
+                    default:
+                        if $0.code == $1.code {
+                            return $0.destination < $1.destination
+                        }
+                        return $0.code < $1.code
+                    }
+                })
+                return DeparturesEntry(
+                    date: Date(),
+                    stopName: stopName,
+                    trips: trips,
+                    timeFormat: timeFormat
+                )
+            }
+        } catch {
+        }
+
+        return DeparturesEntry(
+            date: Date(),
+            stopName: "",
+            trips: [],
+            timeFormat: .relative
+        )
+    }
+
+    func timeline(
+        for configuration: ConfigurationIntent,
+        in context: Context,
+    ) async -> Timeline<DeparturesEntry> {
+        let entry = await snapshot(for: configuration, in: context)
+        return Timeline(entries: [entry], policy: .atEnd)
+    }
+
+    func placeholder(in context: Context) -> DeparturesEntry {
+        DeparturesEntry(
+            date: Date(),
+            stopName: "Union Station GO",
+            trips: [],
+            timeFormat: .relative
+        )
+    }
+
+    //    func relevances() async -> WidgetRelevances<ConfigurationAppIntent> {
+    //        // Generate a list containing the contexts this widget is relevant in.
+    //    }
+}
+
+struct DeparturesEntry: TimelineEntry {
+    let date: Date
+    let stopName: String
+    let trips: [CoreTrip]
+    let timeFormat: TimeFormat
+}
+
+extension DeparturesEntry {
+    func getTripDestination(trip: CoreTrip) -> URL {
+        let data: [String: String?] = [
+            "tripId": trip.id,
+            "stopName": trip.stopName,
+            "stopCode": trip.stopCode,
+            "lineCode": trip.code,
+            "destination": trip.destination,
+        ]
+        var components = URLComponents(
+            string: AppKt.TRIPS_URL,
+        )!
+        components.queryItems =
+            data
+            .filter { $0.value != nil }
+            .map {
+                URLQueryItem(name: $0.key, value: $0.value)
+            }
+
+        return components.url!
+    }
+}
+
+struct GODepartures: Widget {
+    var body: some WidgetConfiguration {
+        return AppIntentConfiguration(
+            kind: "DeparturesWidget",
+            intent: ConfigurationIntent.self,
+            provider: GODeparturesProvider()
+        ) { entry in
+            GODeparturesEntryView(entry: entry).containerBackground(
+                .fill.tertiary,
+                for: .widget
+            )
+        }
+        .configurationDisplayName("Upcoming departures")
+        .description("Shows departure information for a stop")
+        .contentMarginsDisabled()
+    }
+}

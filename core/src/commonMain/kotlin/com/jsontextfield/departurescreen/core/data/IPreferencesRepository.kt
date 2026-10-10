@@ -1,0 +1,53 @@
+package com.jsontextfield.departurescreen.core.data
+
+import com.jsontextfield.departurescreen.core.ui.ContrastMode
+import com.jsontextfield.departurescreen.core.ui.SortMode
+import com.jsontextfield.departurescreen.core.ui.ThemeMode
+import com.jsontextfield.departurescreen.core.ui.TimeFormat
+import kotlinx.coroutines.flow.Flow
+
+interface IPreferencesRepository {
+    fun getVisibleTrains(): Flow<Set<String>>
+    suspend fun setVisibleTrains(visibleTrains: Set<String>)
+    fun getSortMode(): Flow<SortMode>
+    suspend fun setSortMode(sortMode: SortMode)
+    fun getSelectedStop(): Flow<String>
+    suspend fun setSelectedStop(stopName: String)
+    fun getTheme(): Flow<ThemeMode>
+    suspend fun setTheme(theme: ThemeMode)
+    fun getDynamicTheme(): Flow<Boolean>
+    suspend fun setDynamicTheme(useDynamicTheme: Boolean)
+    fun getContrast(): Flow<ContrastMode>
+    suspend fun setContrast(contrast: ContrastMode)
+    fun getTimeFormat(): Flow<TimeFormat>
+    suspend fun setTimeFormat(timeFormat: TimeFormat)
+    fun getFavouriteStops(): Flow<Set<String>>
+    suspend fun setFavouriteStops(favouriteStops: Set<String>)
+
+    fun getReadAlerts() : Flow<Set<String>>
+    suspend fun addReadAlert(id: String)
+
+    fun getUseAlertsWithLinks(): Flow<Boolean>
+    suspend fun setUseAlertsWithLinks(useAlertsWithLinks: Boolean)
+
+    fun getVisibleAlertLines(): Flow<Set<String>>
+    suspend fun setVisibleAlertLines(lines: Set<String>)
+
+    fun getIsUnreadAlertsSelected(): Flow<Boolean>
+    suspend fun setIsUnreadAlertsSelected(isSelected: Boolean)
+}
+
+const val SORT_MODE_KEY = "sortMode"
+const val THEME_KEY = "theme"
+const val DYNAMIC_THEME_KEY = "dynamicTheme"
+const val CONTRAST_KEY = "contrast"
+const val TIME_FORMAT_KEY = "timeFormat"
+const val OLD_SELECTED_STOP_CODE_KEY = "selectedStationCode"
+const val SELECTED_STOP_KEY = "selectedStop"
+const val OLD_FAVOURITE_STOPS_KEY = "favouriteStations"
+const val FAVOURITE_STOPS_KEY = "favouriteStops"
+const val HIDDEN_TRAINS_KEY = "hiddenTrains"
+const val READ_ALERTS_KEY = "readAlerts"
+const val USE_ALERTS_WITH_LINKS_KEY = "useAlertsWithLinks"
+const val VISIBLE_ALERT_LINES_KEY = "visibleAlertLines"
+const val IS_UNREAD_ALERTS_SELECTED_KEY = "isUnreadAlertsSelected"
