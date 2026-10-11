@@ -38,25 +38,16 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.jsontextfield.dtc.core.entities.getFullSubject
-import com.jsontextfield.dtc.core.entities.relativeDate
-import com.jsontextfield.dtc.core.entities.twelveHourDate
-import com.jsontextfield.dtc.core.entities.twentyFourHourDate
 import com.jsontextfield.dtc.core.ui.SquircleShape
 import com.jsontextfield.dtc.core.ui.Status
-import com.jsontextfield.dtc.core.ui.TimeFormat
 import com.jsontextfield.dtc.core.ui.components.BackButton
 import com.jsontextfield.dtc.core.ui.components.ErrorScreen
 import com.jsontextfield.dtc.core.ui.components.LoadingScreen
 import com.jsontextfield.dtc.core.ui.components.TripCodeBox
-import com.jsontextfield.dtc.core.ui.theme.lineColours
 import com.jsontextfield.dtc.core.ui.viewmodels.AlertDetailsViewModel
 import com.jsontextfield.dtc.ui.BannerAd
 import dtc.core.generated.resources.Res
 import dtc.core.generated.resources.alert_details_title
-import dtc.core.generated.resources.day_difference_full
-import dtc.core.generated.resources.hour_difference_full
-import dtc.core.generated.resources.minute_difference_full
-import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -126,7 +117,7 @@ fun AlertDetailsScreen(
                                         modifier = Modifier
                                             .size((MaterialTheme.typography.titleMedium.fontSize.value * fontScale * 2).dp)
                                             .background(
-                                                color = lineColours[line] ?: Color.Gray,
+                                                color = Color.Gray,
                                                 shape = SquircleShape,
                                             )
                                     )

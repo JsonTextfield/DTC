@@ -48,7 +48,6 @@ import com.jsontextfield.dtc.core.ui.components.BackButton
 import com.jsontextfield.dtc.core.ui.components.ErrorScreen
 import com.jsontextfield.dtc.core.ui.components.LoadingScreen
 import com.jsontextfield.dtc.core.ui.components.TripCodeBox
-import com.jsontextfield.dtc.core.ui.theme.lineColours
 import com.jsontextfield.dtc.core.ui.viewmodels.TripDetailsViewModel
 import com.jsontextfield.dtc.ui.BannerAd
 import com.jsontextfield.dtc.ui.views.tripdetails.AlertsSection
@@ -86,7 +85,7 @@ fun TripDetailsScreen(
                             modifier = Modifier
                                 .size(32.dp)
                                 .background(
-                                    color = lineColours[uiState.lineCode] ?: Color.Gray,
+                                    color = Color.Gray,
                                     shape = SquircleShape
                                 )
                         )

@@ -25,7 +25,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.jsontextfield.dtc.core.ui.theme.lineColours
 import dtc.core.generated.resources.Res
 import dtc.core.generated.resources.unread
 import dtc.core.generated.resources.filter
@@ -148,8 +147,7 @@ fun AlertFilterChipStrip(
                     },
                 shape = RoundedCornerShape(4.dp),
                 colors = FilterChipDefaults.filterChipColors().copy(
-                    selectedContainerColor = lineColours[lineCode]
-                        ?: Color.Gray,
+                    selectedContainerColor = Color.Gray,
                 )
             )
         }

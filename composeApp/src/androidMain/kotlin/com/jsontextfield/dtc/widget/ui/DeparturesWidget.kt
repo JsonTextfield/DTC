@@ -49,7 +49,6 @@ import com.jsontextfield.dtc.core.ui.StopType
 import com.jsontextfield.dtc.core.ui.TimeFormat
 import com.jsontextfield.dtc.core.ui.theme.darkScheme
 import com.jsontextfield.dtc.core.ui.theme.lightScheme
-import com.jsontextfield.dtc.core.ui.theme.lineColours
 import com.jsontextfield.dtc.ui.MainActivity
 import com.jsontextfield.dtc.widget.config.WidgetConfig
 import com.jsontextfield.dtc.widget.config.WidgetConfigDataStore
@@ -85,7 +84,7 @@ class DeparturesWidget : GlanceAppWidget() {
                     code = "LW",
                     destination = "West Harbour GO",
                     name = "Lakeshore West",
-                    color = lineColours["LW"] ?: Color.Gray,
+                    color = Color.Gray,
                     isBus = false,
                     isCancelled = false,
                     platform = "7 & 8",

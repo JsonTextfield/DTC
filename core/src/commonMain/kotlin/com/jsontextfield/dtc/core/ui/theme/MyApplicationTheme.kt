@@ -37,11 +37,11 @@ fun AppTheme(
     val targetColors = when {
         isDynamicThemeEnabled() && useDynamicTheme -> dynamicColorScheme(isDarkTheme) ?: if (isDarkTheme) darkScheme else lightScheme
         isDarkTheme && contrast == ContrastMode.NORMAL -> darkScheme
-        isDarkTheme && contrast == ContrastMode.MEDIUM -> darkMediumContrastScheme
-        isDarkTheme && contrast == ContrastMode.HIGH -> darkHighContrastScheme
+        isDarkTheme && contrast == ContrastMode.MEDIUM -> mediumContrastDarkColorScheme
+        isDarkTheme && contrast == ContrastMode.HIGH -> highContrastDarkColorScheme
         !isDarkTheme && contrast == ContrastMode.NORMAL -> lightScheme
-        !isDarkTheme && contrast == ContrastMode.MEDIUM -> lightMediumContrastScheme
-        !isDarkTheme && contrast == ContrastMode.HIGH -> lightHighContrastScheme
+        !isDarkTheme && contrast == ContrastMode.MEDIUM -> mediumContrastLightColorScheme
+        !isDarkTheme && contrast == ContrastMode.HIGH -> highContrastLightColorScheme
         else -> if (isDarkTheme) darkScheme else lightScheme
     }
     val colors = animateColorScheme(targetColors)

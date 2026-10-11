@@ -1,5 +1,3 @@
-@file:OptIn(FormatStringsInDatetimeFormats::class)
-
 package com.jsontextfield.dtc.core.ui.components
 
 import androidx.compose.foundation.BorderStroke
@@ -26,24 +24,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp.Companion.Hairline
 import androidx.compose.ui.unit.dp
 import com.jsontextfield.dtc.core.entities.Alert
 import com.jsontextfield.dtc.core.entities.getFullSubject
-import com.jsontextfield.dtc.core.entities.relativeDate
-import com.jsontextfield.dtc.core.entities.twelveHourDate
-import com.jsontextfield.dtc.core.entities.twentyFourHourDate
 import com.jsontextfield.dtc.core.ui.SquircleShape
 import com.jsontextfield.dtc.core.ui.TimeFormat
-import com.jsontextfield.dtc.core.ui.theme.lineColours
-import dtc.core.generated.resources.Res
-import dtc.core.generated.resources.day_difference
-import dtc.core.generated.resources.hour_difference
-import dtc.core.generated.resources.minute_difference
-import kotlinx.datetime.format.FormatStringsInDatetimeFormats
-import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
@@ -92,7 +79,7 @@ fun AlertItem(
                                 modifier = Modifier
                                     .size((MaterialTheme.typography.titleMedium.fontSize.value * fontScale * 2).dp)
                                     .background(
-                                        color = lineColours[line] ?: Color.Gray,
+                                        color = Color.Gray,
                                         shape = SquircleShape,
                                     )
                             )

@@ -25,7 +25,6 @@ import com.jsontextfield.dtc.R
 import com.jsontextfield.dtc.core.entities.Trip
 import com.jsontextfield.dtc.core.ui.SortMode
 import com.jsontextfield.dtc.core.ui.components.TripListItem
-import com.jsontextfield.dtc.core.ui.theme.lineColours
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
@@ -87,13 +86,12 @@ fun WidgetConfigPreview(
 }
 
 private val trips = List(4) {
-    val line = lineColours.keys.random()
     Trip(
         id = "$it",
-        code = line,
+        code = "GO",
         destination = "Destination",
         platform = "${2 * it + 1}",
-        color = lineColours[line] ?: Color.Gray,
+        color = Color.Gray,
         departureTime = Clock.System.now() + it.minutes,
         lastUpdated = Clock.System.now() - 10.minutes,
     )
