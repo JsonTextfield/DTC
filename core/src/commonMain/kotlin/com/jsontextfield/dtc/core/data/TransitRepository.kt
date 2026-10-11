@@ -73,7 +73,27 @@ class TransitRepository(
         tripId: String,
         stopCode: String
     ): TripDetails? {
-        return null
+        val lastUpdated = Clock.System.now()
+        return ttcGtfsRealtimeApi.tripUpdates().entity.firstOrNull {
+            it.trip_update?.trip?.trip_id == tripId
+        }?.let { tripUpdate ->
+            TripDetails(
+                id = tripId,
+                stops = tripUpdate.trip_update?.stop_time_update?.mapNotNull { stopTimeUpdate ->
+                    stopTimeUpdate.stop_id?.let { stopId ->
+                        val stop = gtfsDatabase.stopQueries.selectStopById(stopId).executeAsOneOrNull()
+                        Schedule(
+                            name = stop?.stop_name.orEmpty(),
+                            code = stopId,
+                            time = Instant.fromEpochSeconds(
+                                stopTimeUpdate.arrival?.time ?: lastUpdated.epochSeconds
+                            ),
+                            lastUpdated = lastUpdated
+                        )
+                    }
+                }.orEmpty(),
+            )
+        }
     }
 
     override suspend fun getTripInfo(tripId: String): SelectTripById? {
