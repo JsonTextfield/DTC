@@ -62,7 +62,7 @@ fun App(
 
     val initialKeys = remember {
         val url = DeepLinkHolder.pendingUrl.value
-        val keys = url?.let { DeepLinkHolder.parseDeepLink(url) } ?: listOf(StopsRoute())
+        val keys = url?.let { DeepLinkHolder.parseDeepLink(url) } ?: listOf(HomeRoute())
         if (url != null) {
             DeepLinkHolder.consume()
         }

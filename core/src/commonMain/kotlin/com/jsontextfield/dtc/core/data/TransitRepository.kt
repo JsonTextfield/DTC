@@ -317,7 +317,7 @@ class TransitRepository(
             return stopsByName.values.flatten()
         }
         return try {
-            val dbStops = gtfsDatabase.stopQueriesQueries.selectAllStops().executeAsList()
+            val dbStops = gtfsDatabase.stopQueries.selectAllStops().executeAsList()
             if (dbStops.isNotEmpty()) {
                 dbStops.map { stopRow ->
                     val code = stopRow.stop_code ?: stopRow.stop_id

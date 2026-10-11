@@ -22,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jsontextfield.dtc.core.ui.components.BackButton
 import com.jsontextfield.dtc.core.ui.components.CountdownTimer
@@ -98,19 +99,17 @@ fun TtcArrivalRow(arrival: TtcArrivalItem) {
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = "Route: ${arrival.routeId ?: "N/A"}",
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = "Trip: ${arrival.tripId}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
         Text(
-            text = if (arrival.minutes == 0) "Due" else "${arrival.minutes} min",
-            style = MaterialTheme.typography.titleMedium
+            text = "${arrival.routeId ?: "N/A"} Route Destination",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.weight(10 / 12f)
+        )
+
+        Text(
+            text = "${arrival.minutes}\nmin",
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.weight(2 / 12f)
         )
     }
 }

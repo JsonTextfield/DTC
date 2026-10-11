@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS trips (
+    trip_id       TEXT PRIMARY KEY,
+    route_id      TEXT NOT NULL,
+    service_id    TEXT NOT NULL,
+    trip_headsign TEXT,
+    direction_id  INTEGER,
+    block_id      TEXT,
+    shape_id      TEXT
+);
+
+selectAllTrips:
+SELECT * FROM trips;
