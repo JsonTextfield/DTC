@@ -35,11 +35,7 @@ class TransitRepository(
     private val timeZone = TimeZone.of("America/Toronto")
     private var stopsByName: Map<String, List<Stop>> = emptyMap()
     private var stopsMap: Map<String, String> = emptyMap()
-    private var serviceAlerts: List<Alert> = emptyList()
     private var lastUpdated: Instant = Instant.fromEpochMilliseconds(0)
-    private var serviceAtAGlanceTrains: Map<String, ServiceAtAGlanceTrainsResponse.Trips.Trip>? =
-        null
-    private var exceptions: ExceptionsResponse? = null
 
     override suspend fun getTrips(stopCode: String): List<Trip> {
         val currentTime = Clock.System.now()
@@ -81,12 +77,15 @@ class TransitRepository(
                 id = tripId,
                 stops = tripUpdate.trip_update?.stop_time_update?.mapNotNull { stopTimeUpdate ->
                     stopTimeUpdate.stop_id?.let { stopId ->
-                        val stop = gtfsDatabase.stopQueries.selectStopById(stopId).executeAsOneOrNull()
+                        val stop =
+                            gtfsDatabase.stopQueries.selectStopById(stopId)
+                                .executeAsOneOrNull()
                         Schedule(
                             name = stop?.stop_name.orEmpty(),
                             code = stopId,
                             time = Instant.fromEpochSeconds(
-                                stopTimeUpdate.arrival?.time ?: lastUpdated.epochSeconds
+                                stopTimeUpdate.arrival?.time
+                                    ?: lastUpdated.epochSeconds
                             ),
                             lastUpdated = lastUpdated
                         )
@@ -199,6 +198,10 @@ class TransitRepository(
                             translations.firstOrNull { it.language == language }?.text
                                 ?: translations.firstOrNull()?.text
                         }.orEmpty(),
+                        urlEn = alert.url?.translation?.let { translations ->
+                            translations.firstOrNull { translation -> translation.language == language }?.text
+                                ?: translations.firstOrNull()?.text
+                        }
                     )
                 }
 

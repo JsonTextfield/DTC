@@ -29,6 +29,7 @@ class TtcGtfsRealtimeApi {
     }
 
     suspend fun tripUpdates(): FeedMessage = fetch(TRIP_UPDATES_URL)
+    suspend fun subwayUpdates(): FeedMessage = fetch(SUBWAY_UPDATES_URL)
     suspend fun vehiclePositions(): FeedMessage = fetch(VEHICLE_POSITIONS_URL)
     suspend fun alerts(): FeedMessage = fetch(ALERTS_URL)
 
@@ -46,6 +47,7 @@ class TtcGtfsRealtimeApi {
 
     companion object {
         const val TRIP_UPDATES_URL = "https://gtfsrt.ttc.ca/trips/update?format=binary"
+        const val SUBWAY_UPDATES_URL = "https://gtfsrt.ttc.ca/trips/subway?format=binary"
         const val VEHICLE_POSITIONS_URL = "https://gtfsrt.ttc.ca/vehicles/position?format=binary"
         const val ALERTS_URL = "https://gtfsrt.ttc.ca/alerts/all?format=binary"
     }
