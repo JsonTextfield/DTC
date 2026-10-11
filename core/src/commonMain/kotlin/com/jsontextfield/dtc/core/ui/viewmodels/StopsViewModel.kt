@@ -44,7 +44,10 @@ class StopsViewModel(
                 status = Status.LOADING,
             )
         }
-        preferencesRepository.getFavouriteStops().map { favouriteStops ->
+        combine(
+            getSelectedStopUseCase(stopName = selectedStopName),
+            preferencesRepository.getFavouriteStops()
+        ) { selectedStop, favouriteStops ->
             val allStops = transitRepository.getAllStops()
             val updatedStops = allStops
                 .groupBy {
@@ -66,7 +69,7 @@ class StopsViewModel(
                 it.copy(
                     status = Status.LOADED,
                     allStops = updatedStops,
-                    selectedStop = null,
+                    selectedStop = selectedStop,
                 )
             }
         }.catch {

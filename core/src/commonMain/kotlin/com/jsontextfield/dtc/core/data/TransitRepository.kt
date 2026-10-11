@@ -17,6 +17,8 @@ import com.jsontextfield.dtc.core.network.model.ExceptionsResponse
 import com.jsontextfield.dtc.core.network.model.ServiceAtAGlanceTrainsResponse
 import com.jsontextfield.dtc.core.ui.StopType
 import com.rickclephas.kmp.nativecoroutines.NativeCoroutines
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.LocalDateTime
@@ -39,14 +41,19 @@ class TransitRepository(
 
     override suspend fun getTrips(stopCode: String): List<Trip> {
         val currentTime = Clock.System.now()
-        return ttcGtfsRealtimeApi.tripUpdates().arrivalsAtStop(stopCode)
-            .mapNotNull { arrival ->
+        return coroutineScope {
+            val tripArrivalsDeferred = async { ttcGtfsRealtimeApi.tripUpdates().arrivalsAtStop(stopCode) }
+            val subwayArrivalsDeferred = async { ttcGtfsRealtimeApi.subwayUpdates().arrivalsAtStop(stopCode) }
+
+            val allArrivals = tripArrivalsDeferred.await() + subwayArrivalsDeferred.await()
+
+            allArrivals.mapNotNull { arrival ->
                 getTripInfo(arrival.tripId)
                     ?.let { tripInfo ->
                         Trip(
                             id = arrival.tripId,
                             code = arrival.routeId.orEmpty(),
-                            destination = tripInfo.trip_headsign.orEmpty(),
+                            destination = tripInfo.trip_headsign.orEmpty().substringAfter("towards "),
                             color = tripInfo.route_color?.let(Color::fromHex)
                                 ?: Color.Gray,
                             textColor = tripInfo.route_text_color?.let(Color::fromHex)
@@ -56,6 +63,7 @@ class TransitRepository(
                         )
                     }
             }
+        }
     }
 
     override suspend fun getMoreTrips(
@@ -108,22 +116,15 @@ class TransitRepository(
         return try {
             val dbStops =
                 gtfsDatabase.stopQueries.selectAllStops().executeAsList()
-            dbStops.map { stopRow ->
-                val code = stopRow.stop_code ?: stopRow.stop_id
-                val name = stopRow.stop_name
-                val locationType = stopRow.location_type?.toInt() ?: 0
-                val type = when {
-                    locationType == 1 || locationType == 2 -> setOf(
-                        StopType.TRAIN,
-                        StopType.BUS
-                    )
-
-                    else -> setOf(StopType.BUS)
-                }
+            dbStops.groupBy { stop ->
+                stop.parent_station ?: stop.stop_id
+            }.map { (id, stops) ->
+                val code = stops.joinToString(",") { it.stop_id }
+                val name = gtfsDatabase.stopQueries.selectStopById(id).executeAsOneOrNull()
                 Stop(
-                    name = name ?: "",
+                    name = name?.stop_name ?: id,
                     code = code,
-                    types = type,
+                    types = emptySet(),
                 )
             }
         } catch (e: Exception) {
@@ -244,7 +245,7 @@ class TransitRepository(
 
 fun Color.Companion.fromHex(hex: String): Color {
     return try {
-        Color("FF$hex".toLong(16))
+        Color("FF${hex.padStart(6, '0')}".toLong(16))
     } catch (e: Exception) {
         Color.Gray
     }

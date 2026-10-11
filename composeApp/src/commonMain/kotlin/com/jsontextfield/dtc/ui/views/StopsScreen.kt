@@ -114,7 +114,7 @@ private fun StopsScreen(
                 val columns = (widthDp / 300).coerceIn(1, 4)
                 Column {
                     val filteredStops = uiState.getFilteredStops(textFieldState.text.toString())
-                    StopFilterChipStrip(uiState.stopType, onSetStopType)
+                    //StopFilterChipStrip(uiState.stopType, onSetStopType)
 
                     LazyVerticalGrid(
                         state = gridState,
