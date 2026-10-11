@@ -34,7 +34,8 @@ class TripDetailsViewModel(
     private val lineCode: String,
     private val destination: String,
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<TripUIState> = MutableStateFlow(TripUIState())
+    private val _uiState: MutableStateFlow<TripUIState> =
+        MutableStateFlow(TripUIState())
     val uiState: StateFlow<TripUIState> = _uiState.asStateFlow()
 
     init {
@@ -121,11 +122,10 @@ class TripDetailsViewModel(
             }
         }) {
             val schedules = withContext(Dispatchers.IO) {
-                if (lineCode == "UP") {
-                    transitRepository.getUPExpressTripSchedule(tripId)
-                } else {
-                    transitRepository.getTripDetails(tripId, stopCode)?.stops.orEmpty()
-                }
+                transitRepository.getTripDetails(
+                    tripId,
+                    stopCode
+                )?.stops.orEmpty()
             }
             _uiState.update {
                 it.copy(
@@ -154,7 +154,8 @@ class TripDetailsViewModel(
                     transitRepository.getTrips(stopCode)
                         .filter { trip -> trip.code == lineCode && trip.id != tripId }
                 } else {
-                    val sameDirectionTripNumbers = transitRepository.getMoreTrips(tripId, stopCode)
+                    val sameDirectionTripNumbers =
+                        transitRepository.getMoreTrips(tripId, stopCode)
                     transitRepository.getTrips(stopCode)
                         .filter { trip -> trip.code == lineCode && trip.id != tripId && trip.id in sameDirectionTripNumbers }
                 }

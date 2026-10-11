@@ -106,9 +106,4 @@ class FakeTransitRepository : ITransitRepository {
     override suspend fun getStopById(id: String): Stops? {
         TODO("Not yet implemented")
     }
-
-    override suspend fun getUPExpressTripSchedule(id: String): List<Schedule> {
-        if (shouldThrowError) throw Exception("Test Error")
-        return emptyList()
-    }
 }

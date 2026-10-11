@@ -134,40 +134,6 @@ fun AlertDetailsScreen(
                             }
                             Text(alert.getFullSubject(language), style = MaterialTheme.typography.titleMedium)
                             Text(
-                                text = when (uiState.timeFormat) {
-                                    TimeFormat.RELATIVE -> {
-                                        if (alert.relativeDate.inWholeDays > 0) {
-                                            pluralStringResource(
-                                                Res.plurals.day_difference_full,
-                                                alert.relativeDate.inWholeDays.toInt(),
-                                                alert.relativeDate.inWholeDays.toInt(),
-                                            )
-                                        } else if (alert.relativeDate.inWholeHours > 0) {
-                                            pluralStringResource(
-                                                Res.plurals.hour_difference_full,
-                                                alert.relativeDate.inWholeHours.toInt(),
-                                                alert.relativeDate.inWholeHours.toInt(),
-                                            )
-                                        } else {
-                                            pluralStringResource(
-                                                Res.plurals.minute_difference_full,
-                                                alert.relativeDate.inWholeMinutes.toInt(),
-                                                alert.relativeDate.inWholeMinutes.toInt(),
-                                            )
-                                        }
-                                    }
-
-                                    TimeFormat.TWELVE_HOUR -> {
-                                        alert.twelveHourDate
-                                    }
-
-                                    TimeFormat.TWENTY_FOUR_HOUR -> {
-                                        alert.twentyFourHourDate
-                                    }
-                                },
-                                style = MaterialTheme.typography.bodySmall,
-                            )
-                            Text(
                                 alert.getAnnotatedBody(language, MaterialTheme.colorScheme.primary),
                                 style = MaterialTheme.typography.bodyMedium,
                                 modifier = Modifier

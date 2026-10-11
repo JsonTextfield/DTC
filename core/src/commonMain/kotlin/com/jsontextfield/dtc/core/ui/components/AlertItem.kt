@@ -99,30 +99,6 @@ fun AlertItem(
                         }
                     }
                 }
-                Text(
-                    text = when (timeFormat) {
-                        TimeFormat.RELATIVE -> {
-                            if (alert.relativeDate.inWholeDays > 0) {
-                                stringResource(Res.string.day_difference, alert.relativeDate.inWholeDays)
-                            } else if (alert.relativeDate.inWholeHours > 0) {
-                                stringResource(Res.string.hour_difference, alert.relativeDate.inWholeHours)
-                            } else {
-                                stringResource(Res.string.minute_difference, alert.relativeDate.inWholeMinutes)
-                            }
-                        }
-
-                        TimeFormat.TWELVE_HOUR -> {
-                            alert.twelveHourDate
-                        }
-
-                        TimeFormat.TWENTY_FOUR_HOUR -> {
-                            alert.twentyFourHourDate
-                        }
-                    },
-                    style = MaterialTheme.typography.labelSmall,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(2 / 12f)
-                )
                 if (!alert.isRead) {
                     Badge()
                 }

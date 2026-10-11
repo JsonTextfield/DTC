@@ -138,9 +138,6 @@ class TripDetailsViewModelTest {
     fun testUpExpressTripScheduleLoading() = runTest(testDispatcher) {
         val transitRepository = FakeTransitRepository()
         val customRepository = object : ITransitRepository by transitRepository {
-            override suspend fun getUPExpressTripSchedule(id: String): List<Schedule> {
-                return listOf(Schedule(name = "Union Pearson", code = "UP"))
-            }
         }
         val preferencesRepository = FakePreferencesRepository()
 

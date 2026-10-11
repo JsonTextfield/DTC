@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalTime::class)
-
 package com.jsontextfield.dtc.core.data
 
 import androidx.compose.ui.graphics.Color
@@ -28,11 +26,7 @@ import kotlinx.datetime.format.char
 import kotlinx.datetime.toInstant
 import kotlinx.io.IOException
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
-
-const val UP_EXPRESS_STOPS = "UN,BL,MD,WE,PA"
-const val UP_EXPRESS = "UP Express"
 
 class TransitRepository(
     private val ttcGtfsRealtimeApi: TtcGtfsRealtimeApi,
@@ -66,10 +60,6 @@ class TransitRepository(
                         )
                     }
             }
-    }
-
-    override suspend fun getUPExpressTripSchedule(id: String): List<Schedule> {
-        return emptyList()
     }
 
     override suspend fun getMoreTrips(
@@ -176,7 +166,24 @@ class TransitRepository(
 
     @NativeCoroutines
     override fun getAllAlerts(language: String): Flow<List<Alert>> {
-        return flow { emptyList<Alert>() }
+        return flow {
+            emit(ttcGtfsRealtimeApi.alerts().entity.mapNotNull { entity ->
+                entity.alert?.let { alert ->
+                    Alert(
+                        id = entity.id,
+                        subjectEn = alert.header_text?.translation?.let { translations ->
+                            translations.firstOrNull { it.language == language }?.text
+                                ?: translations.firstOrNull()?.text
+                        }.orEmpty(),
+                        bodyEn = alert.description_text?.translation?.let { translations ->
+                            translations.firstOrNull { it.language == language }?.text
+                                ?: translations.firstOrNull()?.text
+                        }.orEmpty(),
+                    )
+                }
+
+            })
+        }
     }
 
     companion object {
@@ -210,7 +217,9 @@ class TransitRepository(
             second()
         }
     }
-}fun Color.Companion.fromHex(hex: String): Color {
+}
+
+fun Color.Companion.fromHex(hex: String): Color {
     return try {
         Color("FF$hex".toLong(16))
     } catch (e: Exception) {

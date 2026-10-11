@@ -26,6 +26,4 @@ interface ITransitRepository {
     suspend fun getStopsByName(name: String): List<Stops>
 
     suspend fun getStopById(id: String): Stops?
-
-    suspend fun getUPExpressTripSchedule(id: String): List<Schedule>
 }

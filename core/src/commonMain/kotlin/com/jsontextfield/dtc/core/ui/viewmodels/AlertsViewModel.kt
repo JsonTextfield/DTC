@@ -30,7 +30,8 @@ class AlertsViewModel(
     private val transitRepository: ITransitRepository,
     private val preferencesRepository: IPreferencesRepository,
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<AlertsUIState> = MutableStateFlow(AlertsUIState())
+    private val _uiState: MutableStateFlow<AlertsUIState> =
+        MutableStateFlow(AlertsUIState())
     val uiState: StateFlow<AlertsUIState> = _uiState.asStateFlow()
 
     init {
@@ -53,7 +54,8 @@ class AlertsViewModel(
         }.launchIn(viewModelScope)
         combine(
             preferencesRepository.getVisibleAlertLines().distinctUntilChanged(),
-            preferencesRepository.getIsUnreadAlertsSelected().distinctUntilChanged(),
+            preferencesRepository.getIsUnreadAlertsSelected()
+                .distinctUntilChanged(),
         ) { visibleAlertLines, isUnreadSelected ->
             _uiState.update {
                 it.copy(
