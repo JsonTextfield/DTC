@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">GO Departures</string>
+    <string name="app_name">DTC</string>
     <string name="platform_number">Platform %s</string>
     <string name="platform">Platform</string>
     <string name="express">Express</string>
