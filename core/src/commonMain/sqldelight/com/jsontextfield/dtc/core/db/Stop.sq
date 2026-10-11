@@ -12,3 +12,9 @@ CREATE TABLE IF NOT EXISTS stops (
 
 selectAllStops:
 SELECT * FROM stops WHERE parent_station IS NULL;
+
+selectStopsByName:
+SELECT * FROM stops WHERE stop_name=?;
+
+selectStopById:
+SELECT * FROM stops WHERE stop_id=?;

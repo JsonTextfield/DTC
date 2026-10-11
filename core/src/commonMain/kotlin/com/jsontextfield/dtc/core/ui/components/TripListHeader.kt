@@ -22,28 +22,20 @@ fun TripListHeader(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
-            text = stringResource(Res.string.time),
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-            style = MaterialTheme.typography.labelSmall,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.weight(3 / 12f)
-        )
-        Text(
             text = stringResource(Res.string.line),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(6 / 12f)
+            modifier = Modifier.weight(10 / 12f)
         )
         Text(
-            text = stringResource(Res.string.platform),
+            text = stringResource(Res.string.time),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(3 / 12f)
+            modifier = Modifier.weight(2 / 12f)
         )
     }
 }

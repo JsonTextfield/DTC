@@ -10,7 +10,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsBytes
 
-class TtcRealtimeApi {
+class TtcGtfsRealtimeApi {
     private val client: HttpClient = HttpClient {
         expectSuccess = true
         install(HttpTimeout) {

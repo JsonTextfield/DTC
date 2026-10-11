@@ -5,20 +5,17 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import com.jsontextfield.dtc.core.data.IPreferencesRepository
 import com.jsontextfield.dtc.core.data.ITransitRepository
-import com.jsontextfield.dtc.core.data.TtcRealtimeRepository
 import com.jsontextfield.dtc.core.data.TransitRepository
 import com.jsontextfield.dtc.core.data.fake.FakeTransitRepository
 import com.jsontextfield.dtc.core.db.GtfsDatabase
 import com.jsontextfield.dtc.core.domain.GetSelectedStopUseCase
 import com.jsontextfield.dtc.core.domain.SetFavouriteStopUseCase
-import com.jsontextfield.dtc.core.network.DepartureScreenAPI
-import com.jsontextfield.dtc.core.network.TtcRealtimeApi
+import com.jsontextfield.dtc.core.network.TtcGtfsRealtimeApi
 import com.jsontextfield.dtc.core.ui.viewmodels.AlertDetailsViewModel
 import com.jsontextfield.dtc.core.ui.viewmodels.AlertsViewModel
 import com.jsontextfield.dtc.core.ui.viewmodels.MainViewModel
 import com.jsontextfield.dtc.core.ui.viewmodels.SettingsViewModel
 import com.jsontextfield.dtc.core.ui.viewmodels.StopsViewModel
-import com.jsontextfield.dtc.core.ui.viewmodels.TtcArrivalsViewModel
 import com.jsontextfield.dtc.core.ui.viewmodels.TripDetailsViewModel
 import okio.Path.Companion.toPath
 import org.koin.core.context.startKoin
@@ -31,8 +28,7 @@ import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
 val networkModule = module {
-    singleOf(::DepartureScreenAPI)
-    singleOf(::TtcRealtimeApi)
+    singleOf(::TtcGtfsRealtimeApi)
 }
 
 val dataModule = module {
@@ -41,10 +37,12 @@ val dataModule = module {
         if (useFake) {
             FakeTransitRepository()
         } else {
-            TransitRepository(get<DepartureScreenAPI>(), get<GtfsDatabase>())
+            TransitRepository(
+                ttcGtfsRealtimeApi = get<TtcGtfsRealtimeApi>(),
+                gtfsDatabase = get<GtfsDatabase>()
+            )
         }
     }
-    singleOf(::TtcRealtimeRepository)
 }
 
 expect fun preferencesModule(): Module
@@ -60,13 +58,6 @@ val viewModelModule = module {
     viewModelOf(::AlertsViewModel)
     viewModelOf(::StopsViewModel)
     viewModelOf(::SettingsViewModel)
-    viewModelOf(::TtcArrivalsViewModel)
-    viewModel { params ->
-        TtcArrivalsViewModel(
-            ttcRealtimeRepository = get<TtcRealtimeRepository>(),
-            stopId = params.getOrNull(String::class),
-        )
-    }
     viewModel { params ->
         StopsViewModel(
             getSelectedStopUseCase = get<GetSelectedStopUseCase>(),

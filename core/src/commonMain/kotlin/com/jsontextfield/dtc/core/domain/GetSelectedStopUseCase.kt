@@ -18,7 +18,7 @@ class GetSelectedStopUseCase(
      * 1. selected stop from the preferences
      * 2. first stop in the list
      */
-    operator fun invoke(stopName: String? = null): Flow<Stop?> {
+    operator fun invoke(stopName: String? = null, stopCode: String? = null): Flow<Stop?> {
         val allStopsFlow = flow {
             emit(
                 goTrainDataSource.getAllStops()
@@ -37,8 +37,8 @@ class GetSelectedStopUseCase(
             preferencesRepository.getFavouriteStops(),
         ) { allStops, prefStopName, favouriteStops ->
             val selectedStop = allStops.firstOrNull { it.name == stopName }
+                ?: allStops.firstOrNull { it.code == stopCode }
                 ?: allStops.firstOrNull { it.name == prefStopName }
-                ?: allStops.firstOrNull { it.code == "UN" }
                 ?: allStops.firstOrNull()
 
             selectedStop?.copy(isFavourite = selectedStop.name in favouriteStops)

@@ -28,6 +28,8 @@ import dtc.core.generated.resources.number_of_cars
 import dtc.core.generated.resources.platform_number
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
+import kotlin.math.E
+import kotlin.math.PI
 
 private const val SHOULD_SHOW_TRAIN_INFO = false
 
@@ -45,13 +47,8 @@ fun TripListItem(
         val shouldShowTrainCode = with(LocalDensity.current) {
             fontScale <= 1.5f
         }
-        TimeBox(
-            trip,
-            timeFormat = timeFormat,
-            modifier = Modifier.weight(3 / 12f)
-        )
         Row(
-            modifier = Modifier.weight(6 / 12f),
+            modifier = Modifier.weight(10 / 12f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -59,8 +56,9 @@ fun TripListItem(
                 val fontScale = LocalDensity.current.fontScale
                 TripCodeBox(
                     tripCode = trip.code,
+                    textColor = trip.textColor,
                     modifier = Modifier
-                        .size((MaterialTheme.typography.titleMedium.fontSize.value * fontScale * 2).dp)
+                        .size((MaterialTheme.typography.titleMedium.fontSize.value * fontScale * E).dp)
                         .background(color = trip.color, shape = SquircleShape)
                         .semantics {
                             contentDescription = if (trip.isBus) {
@@ -84,8 +82,9 @@ fun TripListItem(
                 }
                 Text(
                     text = trip.destination,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 4,
+                    overflow = TextOverflow.MiddleEllipsis,
+                    style = MaterialTheme.typography.labelMedium,
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     if (trip.isCancelled) {
@@ -104,56 +103,10 @@ fun TripListItem(
                 }
             }
         }
-        val platform = stringResource(Res.string.platform_number, trip.platform)
-        Column(
-            modifier = Modifier.weight(3 / 12f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = trip.platform,
-                maxLines = 3,
-                modifier = Modifier
-                    .clearAndSetSemantics {
-                        if (trip.hasPlatform) {
-                            contentDescription = platform
-                        }
-                    },
-                textAlign = TextAlign.Center,
-                style = if (trip.hasPlatform) {
-                    MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                } else {
-                    MaterialTheme.typography.titleMedium
-                },
-            )
-            if (trip.info.isNotBlank() && SHOULD_SHOW_TRAIN_INFO) {
-                Text(
-                    text = trip.info,
-                    textAlign = TextAlign.Center,
-                    style = if (trip.hasPlatform) {
-                        MaterialTheme.typography.labelMedium.copy(
-                            color = MaterialTheme.colorScheme.primary,
-                        )
-                    } else {
-                        MaterialTheme.typography.labelMedium
-                    },
-                )
-            }
-            trip.cars?.let {
-                Text(
-                    text = pluralStringResource(Res.plurals.number_of_cars, it.toIntOrNull() ?: 0, it),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.labelMedium,
-                )
-            } ?: trip.busType?.let {
-                Text(
-                    text = it,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.labelMedium,
-                )
-            }
-        }
+        TimeBox(
+            trip,
+            timeFormat = timeFormat,
+            modifier = Modifier.weight(2 / 12f)
+        )
     }
 }

@@ -33,17 +33,16 @@ import com.jsontextfield.dtc.core.ui.viewmodels.AlertsViewModel
 import com.jsontextfield.dtc.core.ui.viewmodels.MainViewModel
 import com.jsontextfield.dtc.core.ui.viewmodels.StopsViewModel
 import com.jsontextfield.dtc.core.ui.viewmodels.TripDetailsViewModel
-import com.jsontextfield.dtc.core.ui.viewmodels.TtcArrivalsViewModel
 import com.jsontextfield.dtc.ui.intents.Alerts
 import com.jsontextfield.dtc.ui.intents.Settings
 import com.jsontextfield.dtc.ui.intents.Stops
 import com.jsontextfield.dtc.ui.intents.TripDetails
 import com.jsontextfield.dtc.ui.views.AlertDetailsScreen
 import com.jsontextfield.dtc.ui.views.AlertsScreen
+import com.jsontextfield.dtc.ui.views.MainScreen
 import com.jsontextfield.dtc.ui.views.SettingsScreen
 import com.jsontextfield.dtc.ui.views.StopsScreen
 import com.jsontextfield.dtc.ui.views.TripDetailsScreen
-import com.jsontextfield.dtc.ui.views.TtcArrivalsScreen
 import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -62,7 +61,7 @@ fun App(
 
     val initialKeys = remember {
         val url = DeepLinkHolder.pendingUrl.value
-        val keys = url?.let { DeepLinkHolder.parseDeepLink(url) } ?: listOf(StopsRoute())
+        val keys = url?.let { DeepLinkHolder.parseDeepLink(url) } ?: listOf(HomeRoute())
         if (url != null) {
             DeepLinkHolder.consume()
         }
@@ -186,10 +185,9 @@ fun App(
                         entry<HomeRoute>(
                             metadata = TransitAdaptiveScene.homePane()
                         ) { route ->
-                            val ttcArrivalsViewModel = koinViewModel<TtcArrivalsViewModel>(key = route.selectedStop.orEmpty()) {
-                                parametersOf(route.selectedStop)
-                            }
-                            TtcArrivalsScreen(viewModel = ttcArrivalsViewModel,
+                            route.selectedStop?.let(mainViewModel::setSelectedStop)
+                            MainScreen(
+                                mainViewModel = mainViewModel,
                                 onNavigationAction = { action ->
                                     when (action) {
                                         Alerts -> {
@@ -276,7 +274,7 @@ fun App(
                                 onStopSelected = { stop ->
                                     safeNavigation {
                                         backStack.clear()
-                                        backStack.add(HomeRoute(stop.code))
+                                        backStack.add(HomeRoute(stop.name))
                                     }
                                 },
                                 onBackPressed = {

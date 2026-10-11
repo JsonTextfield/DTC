@@ -6,13 +6,11 @@ import androidx.datastore.preferences.core.Preferences
 import com.jsontextfield.dtc.core.data.DataStorePreferencesRepository
 import com.jsontextfield.dtc.core.data.IPreferencesRepository
 import com.jsontextfield.dtc.core.data.ITransitRepository
-import com.jsontextfield.dtc.core.data.TtcRealtimeRepository
 import com.jsontextfield.dtc.core.data.TransitRepository
 import com.jsontextfield.dtc.core.data.fake.FakeTransitRepository
 import com.jsontextfield.dtc.core.domain.GetSelectedStopUseCase
 import com.jsontextfield.dtc.core.domain.SetFavouriteStopUseCase
-import com.jsontextfield.dtc.core.network.DepartureScreenAPI
-import com.jsontextfield.dtc.core.network.TtcRealtimeApi
+import com.jsontextfield.dtc.core.network.TtcGtfsRealtimeApi
 import com.jsontextfield.dtc.core.ui.viewmodels.MainViewModel
 import okio.Path.Companion.toPath
 import org.koin.android.ext.koin.androidContext
@@ -23,8 +21,7 @@ import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
 val networkModule = module {
-    singleOf(::DepartureScreenAPI)
-    singleOf(::TtcRealtimeApi)
+    singleOf(::TtcGtfsRealtimeApi)
 }
 
 val dataModule = module {

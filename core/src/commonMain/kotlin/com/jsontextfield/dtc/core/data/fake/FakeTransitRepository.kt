@@ -3,6 +3,9 @@
 package com.jsontextfield.dtc.core.data.fake
 
 import com.jsontextfield.dtc.core.data.ITransitRepository
+import com.jsontextfield.dtc.core.db.SelectTripById
+import com.jsontextfield.dtc.core.db.Stops
+import com.jsontextfield.dtc.core.db.Trips
 import com.jsontextfield.dtc.core.entities.Alert
 import com.jsontextfield.dtc.core.entities.Schedule
 import com.jsontextfield.dtc.core.entities.Stop
@@ -77,6 +80,10 @@ class FakeTransitRepository : ITransitRepository {
         return null
     }
 
+    override suspend fun getTripInfo(tripId: String): SelectTripById? {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getMoreTrips(
         tripId: String,
         stopCode: String
@@ -90,6 +97,14 @@ class FakeTransitRepository : ITransitRepository {
 
     override suspend fun getAllStops(): List<Stop> {
         return stops
+    }
+
+    override suspend fun getStopsByName(name: String): List<Stops> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getStopById(id: String): Stops? {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getUPExpressTripSchedule(id: String): List<Schedule> {

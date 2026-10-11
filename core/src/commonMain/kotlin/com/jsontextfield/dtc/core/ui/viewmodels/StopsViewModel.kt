@@ -10,6 +10,8 @@ import com.jsontextfield.dtc.core.domain.SetFavouriteStopUseCase
 import com.jsontextfield.dtc.core.entities.Stop
 import com.jsontextfield.dtc.core.ui.Status
 import com.jsontextfield.dtc.core.ui.StopType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +21,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class StopsViewModel(
     private val getSelectedStopUseCase: GetSelectedStopUseCase,

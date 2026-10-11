@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 fun TripCodeBox(
     tripCode: String,
     modifier: Modifier = Modifier,
+    textColor: Color? = null,
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -24,7 +25,7 @@ fun TripCodeBox(
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                color = Color.White,
+                color = textColor ?: Color.White,
             ),
         )
     }

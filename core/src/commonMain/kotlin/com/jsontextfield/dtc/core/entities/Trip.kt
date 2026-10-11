@@ -24,6 +24,7 @@ data class Trip(
     val departureTime: Instant = Instant.fromEpochMilliseconds(0),
     private val lastUpdated: Instant = Instant.fromEpochMilliseconds(0),
     val color: Color = Color.Gray,
+    val textColor: Color = Color.White,
     val tripOrder: Int = 0,
     val info: String = "",
     val isVisible: Boolean = true,

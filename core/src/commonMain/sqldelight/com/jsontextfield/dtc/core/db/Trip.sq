@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS trips (
+    trip_id       TEXT PRIMARY KEY,
+    route_id      TEXT NOT NULL,
+    service_id    TEXT NOT NULL,
+    trip_headsign TEXT,
+    direction_id  INTEGER,
+    block_id      TEXT,
+    shape_id      TEXT
+);
+
+CREATE TABLE IF NOT EXISTS routes (
+    route_id         TEXT PRIMARY KEY,
+    route_short_name TEXT,
+    route_long_name  TEXT,
+    route_type       INTEGER,
+    route_color      TEXT,
+    route_text_color TEXT
+);
+
+selectTripById:
+SELECT * FROM trips INNER JOIN routes ON trips.route_id = routes.route_id WHERE trip_id=?;
