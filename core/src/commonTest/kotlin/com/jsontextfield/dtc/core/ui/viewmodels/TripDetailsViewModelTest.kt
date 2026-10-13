@@ -2,9 +2,11 @@
 
 package com.jsontextfield.dtc.core.ui.viewmodels
 
+import androidx.compose.ui.graphics.Color
 import com.jsontextfield.dtc.core.data.ITransitRepository
 import com.jsontextfield.dtc.core.data.fake.FakePreferencesRepository
 import com.jsontextfield.dtc.core.data.fake.FakeTransitRepository
+import com.jsontextfield.dtc.core.db.SelectTripById
 import com.jsontextfield.dtc.core.entities.Alert
 import com.jsontextfield.dtc.core.entities.Schedule
 import com.jsontextfield.dtc.core.ui.Status
@@ -180,5 +182,45 @@ class TripDetailsViewModelTest {
 
         advanceUntilIdle()
         assertEquals(TimeFormat.TWENTY_FOUR_HOUR, viewModel.uiState.value.timeFormat)
+    }
+
+    /**
+     * GIVEN a transit repository returning trip info with custom route and text colors
+     * WHEN TripDetailsViewModel loads data
+     * THEN uiState reflects the correct routeColor and routeTextColor
+     */
+    @Test
+    fun testTripInfoColorLoading() = runTest(testDispatcher) {
+        val transitRepository = FakeTransitRepository()
+        transitRepository.tripInfo = SelectTripById(
+            trip_id = "123",
+            route_id = "LW",
+            service_id = "srv",
+            trip_headsign = null,
+            direction_id = null,
+            block_id = null,
+            shape_id = null,
+            route_id_ = "LW",
+            route_short_name = "LW",
+            route_long_name = "Lakeshore West",
+            route_type = null,
+            route_color = "00853F",
+            route_text_color = "FFFFFF",
+        )
+        val preferencesRepository = FakePreferencesRepository()
+
+        val viewModel = TripDetailsViewModel(
+            preferencesRepository = preferencesRepository,
+            transitRepository = transitRepository,
+            selectedStop = "UN",
+            stopCode = "UN",
+            tripId = "123",
+            lineCode = "LW",
+            destination = "Niagara Falls",
+        )
+
+        advanceUntilIdle()
+        assertEquals(Color(0xFF00853F), viewModel.uiState.value.routeColor)
+        assertEquals(Color.White, viewModel.uiState.value.routeTextColor)
     }
 }

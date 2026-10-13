@@ -1,10 +1,12 @@
 package com.jsontextfield.dtc.core.ui.viewmodels
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jsontextfield.dtc.core.data.IPreferencesRepository
 import com.jsontextfield.dtc.core.data.ITransitRepository
+import com.jsontextfield.dtc.core.data.fromHex
 import com.jsontextfield.dtc.core.entities.Alert
 import com.jsontextfield.dtc.core.entities.Schedule
 import com.jsontextfield.dtc.core.entities.Trip
@@ -75,6 +77,30 @@ class TripDetailsViewModel(
         loadAlerts(Locale.current.language)
         loadStops()
         loadMoreTrips()
+        loadTripInfo()
+    }
+
+    private fun loadTripInfo() {
+        viewModelScope.launch(CoroutineExceptionHandler { _, _ ->
+            _uiState.update {
+                it.copy(
+                    routeColor = Color.Gray,
+                    routeTextColor = Color.White,
+                )
+            }
+        }) {
+            val tripInfo = withContext(Dispatchers.IO) {
+                transitRepository.getTripInfo(tripId)
+            }
+            val routeColor = tripInfo?.route_color?.let(Color::fromHex) ?: Color.Gray
+            val routeTextColor = tripInfo?.route_text_color?.let(Color::fromHex) ?: Color.White
+            _uiState.update {
+                it.copy(
+                    routeColor = routeColor,
+                    routeTextColor = routeTextColor,
+                )
+            }
+        }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -150,15 +176,8 @@ class TripDetailsViewModel(
             }
         }) {
             val moreTrips = withContext(Dispatchers.IO) {
-                if (lineCode == "UP") {
-                    transitRepository.getTrips(stopCode)
-                        .filter { trip -> trip.code == lineCode && trip.id != tripId }
-                } else {
-                    val sameDirectionTripNumbers =
-                        transitRepository.getMoreTrips(tripId, stopCode)
-                    transitRepository.getTrips(stopCode)
-                        .filter { trip -> trip.code == lineCode && trip.id != tripId && trip.id in sameDirectionTripNumbers }
-                }
+                transitRepository.getTrips(stopCode)
+                    .filter { trip -> trip.code == lineCode && trip.id != tripId }
             }
             _uiState.update {
                 it.copy(
@@ -177,6 +196,8 @@ data class TripUIState(
     val lineCode: String = "",
     val selectedStop: String = "",
     val destination: String = "",
+    val routeColor: Color = Color.Gray,
+    val routeTextColor: Color = Color.White,
     val stops: List<Schedule> = emptyList(),
     val alerts: List<Alert> = emptyList(),
     val serviceGuarantee: String = "",

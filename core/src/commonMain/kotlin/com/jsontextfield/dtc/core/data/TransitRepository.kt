@@ -12,10 +12,6 @@ import com.jsontextfield.dtc.core.entities.Trip
 import com.jsontextfield.dtc.core.entities.TripDetails
 import com.jsontextfield.dtc.core.network.TtcGtfsRealtimeApi
 import com.jsontextfield.dtc.core.network.arrivalsAtStop
-import com.jsontextfield.dtc.core.network.model.AlertsResponse
-import com.jsontextfield.dtc.core.network.model.ExceptionsResponse
-import com.jsontextfield.dtc.core.network.model.ServiceAtAGlanceTrainsResponse
-import com.jsontextfield.dtc.core.ui.StopType
 import com.rickclephas.kmp.nativecoroutines.NativeCoroutines
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -25,8 +21,6 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import kotlinx.datetime.format.char
-import kotlinx.datetime.toInstant
-import kotlinx.io.IOException
 import kotlin.time.Clock
 import kotlin.time.Instant
 
@@ -42,24 +36,35 @@ class TransitRepository(
     override suspend fun getTrips(stopCode: String): List<Trip> {
         val currentTime = Clock.System.now()
         return coroutineScope {
-            val tripArrivalsDeferred = async { ttcGtfsRealtimeApi.tripUpdates().arrivalsAtStop(stopCode) }
-            val subwayArrivalsDeferred = async { ttcGtfsRealtimeApi.subwayUpdates().arrivalsAtStop(stopCode) }
+            val tripArrivalsDeferred = async {
+                ttcGtfsRealtimeApi.tripUpdates().arrivalsAtStop(stopCode)
+            }
+            val subwayArrivalsDeferred = async {
+                ttcGtfsRealtimeApi.subwayUpdates().arrivalsAtStop(stopCode)
+            }
 
-            val allArrivals = tripArrivalsDeferred.await() + subwayArrivalsDeferred.await()
+            val allArrivals =
+                tripArrivalsDeferred.await() + subwayArrivalsDeferred.await()
 
+            val stop = gtfsDatabase.stopQueries.selectStopById(
+                stopCode.split(",").first()
+            ).executeAsOneOrNull()
             allArrivals.mapNotNull { arrival ->
                 getTripInfo(arrival.tripId)
                     ?.let { tripInfo ->
                         Trip(
                             id = arrival.tripId,
                             code = arrival.routeId.orEmpty(),
-                            destination = tripInfo.trip_headsign.orEmpty().substringAfter("towards "),
+                            destination = tripInfo.trip_headsign.orEmpty()
+                                .substringAfter("towards "),
                             color = tripInfo.route_color?.let(Color::fromHex)
                                 ?: Color.Gray,
                             textColor = tripInfo.route_text_color?.let(Color::fromHex)
                                 ?: Color.White,
                             lastUpdated = currentTime,
                             departureTime = Instant.fromEpochSeconds(arrival.predictedEpochSeconds),
+                            stopCode = stopCode,
+                            stopName = stop?.stop_name
                         )
                     }
             }
@@ -77,29 +82,41 @@ class TransitRepository(
         tripId: String,
         stopCode: String
     ): TripDetails? {
-        val lastUpdated = Clock.System.now()
-        return ttcGtfsRealtimeApi.tripUpdates().entity.firstOrNull {
-            it.trip_update?.trip?.trip_id == tripId
-        }?.let { tripUpdate ->
-            TripDetails(
-                id = tripId,
-                stops = tripUpdate.trip_update?.stop_time_update?.mapNotNull { stopTimeUpdate ->
-                    stopTimeUpdate.stop_id?.let { stopId ->
-                        val stop =
-                            gtfsDatabase.stopQueries.selectStopById(stopId)
-                                .executeAsOneOrNull()
-                        Schedule(
-                            name = stop?.stop_name.orEmpty(),
-                            code = stopId,
-                            time = Instant.fromEpochSeconds(
-                                stopTimeUpdate.arrival?.time
-                                    ?: lastUpdated.epochSeconds
-                            ),
-                            lastUpdated = lastUpdated
-                        )
-                    }
-                }.orEmpty(),
-            )
+        return coroutineScope {
+
+            val lastUpdated = Clock.System.now()
+            val tripArrivalsDeferred = async {
+                ttcGtfsRealtimeApi.tripUpdates().entity
+            }
+            val subwayArrivalsDeferred = async {
+                ttcGtfsRealtimeApi.subwayUpdates().entity
+            }
+
+            val allArrivals =
+                tripArrivalsDeferred.await() + subwayArrivalsDeferred.await()
+            allArrivals.firstOrNull {
+                it.trip_update?.trip?.trip_id == tripId
+            }?.let { tripUpdate ->
+                TripDetails(
+                    id = tripId,
+                    stops = tripUpdate.trip_update?.stop_time_update?.mapNotNull { stopTimeUpdate ->
+                        stopTimeUpdate.stop_id?.let { stopId ->
+                            val stop =
+                                gtfsDatabase.stopQueries.selectStopById(stopId)
+                                    .executeAsOneOrNull()
+                            Schedule(
+                                name = stop?.stop_name.orEmpty(),
+                                code = stopId,
+                                time = Instant.fromEpochSeconds(
+                                    stopTimeUpdate.arrival?.time
+                                        ?: lastUpdated.epochSeconds
+                                ),
+                                lastUpdated = lastUpdated
+                            )
+                        }
+                    }.orEmpty(),
+                )
+            }
         }
     }
 
@@ -120,7 +137,8 @@ class TransitRepository(
                 stop.parent_station ?: stop.stop_id
             }.map { (id, stops) ->
                 val code = stops.joinToString(",") { it.stop_id }
-                val name = gtfsDatabase.stopQueries.selectStopById(id).executeAsOneOrNull()
+                val name = gtfsDatabase.stopQueries.selectStopById(id)
+                    .executeAsOneOrNull()
                 Stop(
                     name = name?.stop_name ?: id,
                     code = code,
@@ -145,43 +163,6 @@ class TransitRepository(
     override suspend fun getStopById(id: String): Stops? {
         return gtfsDatabase.stopQueries.selectStopById(stop_id = id)
             .executeAsOneOrNull()
-    }
-
-    private fun AlertsResponse.toAlerts(): List<Alert> {
-        return try {
-            messages?.message?.map { message ->
-                val bodyEn = message.bodyEnglish.orEmpty().trim()
-                val bodyFr = message.bodyFrench.orEmpty().trim()
-                val date = try {
-                    LocalDateTime
-                        .parse(message.postedDateTime, inFormatter)
-                        .toInstant(timeZone)
-                } catch (e: Exception) {
-                    Instant.fromEpochMilliseconds(0L)
-                }
-                Alert(
-                    id = message.code,
-                    date = date,
-                    affectedLines = message.lines.map { if (it.code == "GT") "KI" else it.code },
-                    affectedStops = stopsMap.mapNotNull {
-                        if (message.stops.any { stop -> stop.code in it.key }) {
-                            it.value
-                        } else {
-                            null
-                        }
-                    },
-                    subjectEn = message.subjectEnglish.orEmpty().trim(),
-                    subjectFr = message.subjectFrench.orEmpty().trim(),
-                    bodyEn = bodyEn,
-                    bodyFr = bodyFr,
-                )
-            }?.sortedByDescending { it.date } ?: emptyList()
-        } catch (exception: IOException) {
-            throw exception
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-            emptyList()
-        }
     }
 
     @NativeCoroutines

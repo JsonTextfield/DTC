@@ -69,6 +69,8 @@ class FakeTransitRepository : ITransitRepository {
 
     var informationAlerts: List<Alert> = emptyList()
 
+    var tripInfo: SelectTripById? = null
+
 
     override suspend fun getTrips(stopCode: String): List<Trip> {
         if (shouldThrowError) throw Exception("Test Error")
@@ -81,7 +83,8 @@ class FakeTransitRepository : ITransitRepository {
     }
 
     override suspend fun getTripInfo(tripId: String): SelectTripById? {
-        TODO("Not yet implemented")
+        if (shouldThrowError) throw Exception("Test Error")
+        return tripInfo
     }
 
     override suspend fun getMoreTrips(
