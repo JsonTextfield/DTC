@@ -188,7 +188,7 @@ fun MainScreen(
                                 uiState.allTrips.distinctBy { it.code to it.name }.let { data ->
                                     AnimatedVisibility(data.size > 1) {
                                         TripFilterChipStrip(
-                                            data = data.sortedBy { it.code },
+                                            data = data.sortedBy { it.code.toIntOrNull() },
                                             selectedItems = uiState.visibleTrains,
                                             onSelectionChanged = { onAction(SetVisibleTrains(it)) },
                                         )

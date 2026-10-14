@@ -212,7 +212,7 @@ fun AlertsScreen(
                         ) {
                             Column {
                                 AlertFilterChipStrip(
-                                    data = uiState.allLines,
+                                    data = uiState.allLines.sortedBy { it.toIntOrNull() },
                                     selectedItems = uiState.selectedLines,
                                     onSelectionChanged = onLinesSelected,
                                     isUnreadSelected = uiState.isUnreadSelected,
