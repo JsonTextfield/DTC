@@ -84,7 +84,7 @@ fun TripListItem(
                     text = trip.destination,
                     maxLines = 2,
                     overflow = TextOverflow.MiddleEllipsis,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleMedium,
                 )
                 if (trip.isCancelled) {
                     Text(

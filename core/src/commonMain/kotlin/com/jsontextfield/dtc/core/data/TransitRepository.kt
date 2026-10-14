@@ -183,7 +183,15 @@ class TransitRepository(
                         urlEn = alert.url?.translation?.let { translations ->
                             translations.firstOrNull { translation -> translation.language == language }?.text
                                 ?: translations.firstOrNull()?.text
-                        }
+                        },
+                        affectedLines = alert.informed_entity.mapNotNull { entity ->
+                            entity.route_id
+                        }.distinct(),
+//                        affectedStops = alert.informed_entity.mapNotNull { entity ->
+//                            entity.stop_id?.let { stopId ->
+//                                getStopById(stopId)?.stop_name
+//                            }
+//                        }.distinct(),
                     )
                 }
 

@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.semantics.CollectionInfo
 import androidx.compose.ui.semantics.CollectionItemInfo
 import androidx.compose.ui.semantics.collectionInfo
@@ -29,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import com.jsontextfield.dtc.core.entities.Trip
 import com.jsontextfield.dtc.core.ui.TimeFormat
 import kotlin.math.ceil
+import kotlin.time.Clock
+import kotlin.time.isDistantPast
 
 @Composable
 fun TripList(
@@ -97,6 +100,7 @@ fun TripList(
                         modifier = Modifier
                             .heightIn(min = 80.dp)
                             .fillMaxWidth()
+                            .alpha(if (trip.departureTime < Clock.System.now()) 0.5f else 1f)
                             .clickable(
                                 //enabled = !trip.isCancelled,
                                 onClick = { onItemClick(trip) },
