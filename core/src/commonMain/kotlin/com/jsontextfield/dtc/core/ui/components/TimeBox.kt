@@ -51,7 +51,7 @@ fun TimeBox(
             modifier = Modifier
                 .fillMaxWidth()
                 .basicMarquee(),
-            style = MaterialTheme.typography.titleMedium.copy(
+            style = MaterialTheme.typography.titleLarge.copy(
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
             ),

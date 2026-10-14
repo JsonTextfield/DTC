@@ -86,20 +86,18 @@ fun TripListItem(
                     overflow = TextOverflow.MiddleEllipsis,
                     style = MaterialTheme.typography.titleSmall,
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    if (trip.isCancelled) {
-                        Text(
-                            text = stringResource(Res.string.cancelled),
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.labelMedium,
-                        )
-                    } else if (trip.isExpress) {
-                        Text(
-                            text = stringResource(Res.string.express),
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.labelMedium,
-                        )
-                    }
+                if (trip.isCancelled) {
+                    Text(
+                        text = stringResource(Res.string.cancelled),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                } else if (trip.isExpress) {
+                    Text(
+                        text = stringResource(Res.string.express),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelMedium,
+                    )
                 }
             }
         }

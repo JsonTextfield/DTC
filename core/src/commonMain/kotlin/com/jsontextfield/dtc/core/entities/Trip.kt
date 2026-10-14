@@ -35,24 +35,27 @@ data class Trip(
     val stopName: String? = null,
     val stopCode: String? = null,
 ) {
-    val relativeDepartureTime: Int = (departureTime - lastUpdated).toInt(DurationUnit.MINUTES)
+    val relativeDepartureTime: Int =
+        (departureTime - lastUpdated).toInt(DurationUnit.MINUTES)
 
-    val twelveHourDepartureTime: String = departureTime.format(DateTimeComponents.Format {
-        amPmHour(Padding.NONE)
-        char(':')
-        minute()
-        char(' ')
-        if (Locale.current.language == "fr") {
-            amPmMarker("a.m.", "p.m.")
-        } else {
-            amPmMarker("AM", "PM")
-        }
-    })
-    val twentyFourHourDepartureTime: String = departureTime.format(DateTimeComponents.Format {
-        hour()
-        char(':')
-        minute()
-    })
+    val twelveHourDepartureTime: String =
+        departureTime.format(DateTimeComponents.Format {
+            amPmHour(Padding.NONE)
+            char(':')
+            minute()
+            char(' ')
+            if (Locale.current.language == "fr") {
+                amPmMarker("a.m.", "p.m.")
+            } else {
+                amPmMarker("AM", "PM")
+            }
+        })
+    val twentyFourHourDepartureTime: String =
+        departureTime.format(DateTimeComponents.Format {
+            hour()
+            char(':')
+            minute()
+        })
     val hasPlatform: Boolean = platform.isNotBlank() && platform != "-"
-    val isExpress: Boolean = 'X' in id || code == "UP"
+    val isExpress: Boolean = code.toIntOrNull()?.let { it >= 900 } == true
 }

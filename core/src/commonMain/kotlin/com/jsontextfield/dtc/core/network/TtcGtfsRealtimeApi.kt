@@ -24,7 +24,7 @@ class TtcGtfsRealtimeApi {
                     Logger.withTag("TtcRealtimeApi").d(message)
                 }
             }
-            level = LogLevel.ALL
+            level = LogLevel.INFO
         }
     }
 
@@ -35,9 +35,7 @@ class TtcGtfsRealtimeApi {
 
     private suspend fun fetch(url: String): FeedMessage {
         try {
-            Logger.withTag("TtcRealtimeApi").d("Fetching GTFS-RT from $url")
             val bytes = client.get(url).bodyAsBytes()
-            Logger.withTag("TtcRealtimeApi").d("Fetched ${bytes.size} bytes from $url")
             return FeedMessage.ADAPTER.decode(bytes)
         } catch (e: Exception) {
             Logger.withTag("TtcRealtimeApi").e(e) { "Failed to fetch or decode GTFS-RT from $url" }

@@ -164,10 +164,9 @@ class MainViewModel(
     private fun fetchDepartureData() {
         val stop = uiState.value.selectedStop ?: return
 
-        val stopCodes = stop.code.split(",")
         viewModelScope.launch {
             runCatching {
-                stopCodes.flatMap { transitRepository.getTrips(it) }
+                transitRepository.getTrips(stop.code)
             }.onSuccess { trains ->
                 val trainCodes = trains.map { it.code }.toSet() intersect uiState.value.visibleTrains
                 _uiState.update {
